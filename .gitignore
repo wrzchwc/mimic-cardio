@@ -1,4 +1,5 @@
 .DS_Store
 .idea
 src/.env
-assets/physionet.org
+src/__pycache__
+assets
