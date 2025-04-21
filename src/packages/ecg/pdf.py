@@ -4,7 +4,7 @@ import pydicom
 from pydicom.pixel_data_handlers.util import convert_color_space
 
 # Load the DICOM file
-file_path = '../assets/physionet.org/files/mimic-iv-echo/0.1/files/p16/p16846280/s96459668/96459668_0001.dcm'
+file_path = '../../../assets/physionet.org/files/mimic-iv-echo/0.1/files/p16/p16846280/s96459668/96459668_0001.dcm'
 dicom_data = pydicom.dcmread(file_path)
 
 print("Patient ID:", dicom_data.get("PatientID"))

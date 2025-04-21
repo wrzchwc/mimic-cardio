@@ -21,6 +21,6 @@ def build_command(username: str, password: str, dicom_path: str) -> List[str]:
         "-np",
         "--user", username,
         "--password", password,
-        "-P", "../assets",
+        "-P", "./assets",
         f"{base_url}{dicom_path}"
     ]

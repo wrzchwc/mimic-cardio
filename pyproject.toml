@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "master-thesis"
+version = "1.0.0"
+description = "Master thesis"
+authors = [{ name="Jakub Wierzchowiec", email="wierzchowieckuba@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydicom",
+    "matplotlib",
+    "requests",
+    "dotenv",
+    "openai"
+]
+
+[project.scripts]
+mimic-cardio = "app.main:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

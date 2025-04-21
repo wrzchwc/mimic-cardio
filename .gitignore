@@ -1,5 +1,5 @@
 .DS_Store
 .idea
-src/.env
-src/__pycache__
 assets
+*.egg-info/
+*__pycache__/
