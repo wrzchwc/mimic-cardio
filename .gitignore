@@ -1,5 +1,9 @@
 .DS_Store
 .idea
-assets
+assets/physionet.org
+assets/responses
 *.egg-info/
 *__pycache__/
+assets/cases.jsonl
+assets/diagnoses.json
+assets/echo.jsonl

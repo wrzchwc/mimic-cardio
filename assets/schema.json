@@ -1,0 +1,44 @@
+{
+  "format": {
+    "type": "json_schema",
+    "name": "response",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "diagnoses": {
+          "type": "array",
+          "description": "A list of diagnoses.",
+          "items": {
+            "$ref": "#/$defs/diagnose"
+          }
+        }
+      },
+      "required": [
+        "diagnoses"
+      ],
+      "additionalProperties": false,
+      "$defs": {
+        "diagnose": {
+          "type": "object",
+          "description": "Defines a diagnosis.",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "The code associated with the diagnosis."
+            },
+            "reason": {
+              "type": "string",
+              "description": "The reason associated with the diagnosis."
+            }
+          },
+          "required": [
+            "code",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "strict": true
+  }
+}

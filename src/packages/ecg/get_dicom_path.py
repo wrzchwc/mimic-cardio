@@ -1,25 +1,11 @@
 from json import loads
 
-from .case import Case
 from .study import Study
 
 
-def get_dicom_path(hadm_id: str, subject_id: str) -> str:
-    case = get_case(hadm_id)
-    study = get_latest_study(subject_id, case.get('dischtime'))
+def get_dicom_path(subject_id: str, dischtime: str) -> str:
+    study = get_latest_study(subject_id, dischtime)
     return study.get('dicoms')[0].get('dicom_filepath')
-
-
-def get_case(hadm_id: str) -> Case:
-    cases = []
-    with open('./assets/cases.jsonl', 'r') as file:
-        for case in file:
-            case = loads(case)
-            cases.append({
-                "hadm_id": (case['hadm_id']),
-                "dischtime": (case['dischtime'])
-            })
-    return next((case for case in cases if case['hadm_id'] == hadm_id), None)
 
 
 def get_latest_study(subject_id: str, dischtime: str) -> Study:

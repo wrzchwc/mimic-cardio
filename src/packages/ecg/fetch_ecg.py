@@ -12,9 +12,8 @@ def fetch_ecg(dicom_path: str) -> None:
         raise ValueError("Please set PHYSIONET_USERNAME and PHYSIONET_PASSWORD in your .env file")
     try:
         run(build_command(username, password, dicom_path), check=True)
-        print("Download complete")
     except CalledProcessError as e:
-        print(f"Failure: {e}")
+        print(f"ECG download failure: {e}")
 
 def build_command(username: str, password: str, dicom_path: str) -> List[str]:
     return [
@@ -26,5 +25,6 @@ def build_command(username: str, password: str, dicom_path: str) -> List[str]:
         "--user", username,
         "--password", password,
         "-P", "./assets",
+        "--quiet",
         f"{base_url}{dicom_path}"
     ]
