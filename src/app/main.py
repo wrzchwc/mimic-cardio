@@ -5,7 +5,7 @@ from packages.cases import load_cases
 from packages.ecg import fetch_ecg, get_dicom_path, convert_to_pdf
 from packages.open_ai import query_model, save_response, query_model_with_ecg
 
-model = "gpt-4.1"
+model = "gpt-4.1-2025-04-14"
 
 
 def main():
