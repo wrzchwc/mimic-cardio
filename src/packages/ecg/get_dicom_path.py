@@ -3,8 +3,10 @@ from json import loads
 from .study import Study
 
 
-def get_dicom_path(subject_id: str, dischtime: str) -> str:
+def get_dicom_path(subject_id: str, dischtime: str) -> str | None:
     study = get_latest_study(subject_id, dischtime)
+    if study is None:
+        return None
     return study.get('dicoms')[0].get('dicom_filepath')
 
 

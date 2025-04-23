@@ -5,17 +5,31 @@ from openai.types.responses import Response
 
 client = OpenAI()
 
+default_model = "gpt-4.1-nano"
+temperature = 0.1
 
-def query_model(path: str, case: object, model: str = "gpt-4.1-nano") -> Response:
+final_prompt = "Analyse input data and list all possible diagnoses in the form of ICD-10 codes."
+
+
+def query_model_with_ecg(path: str, case: object, model: str = default_model) -> Response:
     return client.responses.create(
         model=model,
-        input=build_input(
-            dicom_id=upload_dicom(path),
+        input=build_input_with_ecg(
             case=case,
-            ecg_meta=load_ecg_meta(path)
+            dicom_id=upload_dicom(path),
+            ecg_meta=load_text_data(path)
         ),
         text=load_schema(),
-        temperature=0.1
+        temperature=temperature
+    )
+
+
+def query_model(case: object, model: str = default_model) -> Response:
+    return client.responses.create(
+        model=model,
+        input=build_input(case),
+        text=load_schema(),
+        temperature=temperature
     )
 
 
@@ -27,29 +41,15 @@ def upload_dicom(path: str):
     return file_object.id
 
 
-def load_ecg_meta(path: str):
-    with open(f"{path}.txt", "r") as file:
-        content = file.read()
-    return content
-
-
-def build_input(dicom_id: str, case: object, ecg_meta: str):
+def build_input_with_ecg(dicom_id: str, case: object, ecg_meta: str):
     return [
         {
             "role": "developer",
-            "content": "You will receive PDF containing ECG study, metadata of the ECG and JSON data describing patient hospitalization."
+            "content": load_text_data('./assets/prompts/dev_ecg')
         },
         {
             "role": "developer",
-            "content": "Your task will be to analyse the input data and list all possible diagnoses in the form of ICD-10 codes"
-        },
-        {
-            "role": "developer",
-            "content": "Do not summarise most important information about patient or hospitalization"
-        },
-        {
-            "role": "developer",
-            "content": "Briefly refer to facts leading to the diagnoses"
+            "content": load_text_data('./assets/prompts/dev_json')
         },
         {
             "role": "user",
@@ -74,9 +74,36 @@ def build_input(dicom_id: str, case: object, ecg_meta: str):
         },
         {
             "role": "user",
-            "content": "Analyse input data and list all possible diagnoses in the form of ICD-10 codes."
+            "content": final_prompt
         }
     ]
+
+
+def build_input(case: object):
+    return [
+        {
+            "role": "developer",
+            "content": load_text_data('./assets/prompts/dev')
+        },
+        {
+            "role": "developer",
+            "content": load_text_data('./assets/prompts/dev_json')
+        },
+        {
+            "role": "user",
+            "content": f"Here's the JSON data: {json.dumps(case)}"
+        },
+        {
+            "role": "user",
+            "content": final_prompt
+        }
+    ]
+
+
+def load_text_data(path: str) -> str:
+    with open(f"{path}.txt", "r") as file:
+        content = file.read()
+    return content
 
 
 def load_schema():

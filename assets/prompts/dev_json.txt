@@ -1,0 +1,141 @@
+I am going to provide you with the description of the data contained within the JSON data to make it easier to analyze,
+avoid confusion, and reduce the amount of work required to understand the context.
+
+All the dates in the data are shifted into the future for the anonymization purposes. The actual admissions occurred
+between 2008 and 2022.
+
+Each piece of data (I will be referring to it as a case) is a modular object. Some information is described directly
+on the root level of the object, others are nested within top level properties.
+
+Let's start with the root level properties:
+- hadm_id - numeric identifier of hospitalization (hospital stay)
+- subject_id - numeric identifier of the patient being hospitalized
+- admission_type - admission urgency classifier, possible values are: AMBULATORY OBSERVATION, DIRECT EMER.,
+DIRECT OBSERVATION, ELECTIVE, EU OBSERVATION, EW EMER., OBSERVATION ADMIT, SURGICAL SAME DAY ADMISSION, URGENT
+- admission_location - information about the location of the patient prior to arriving to hospital
+- admittime - date and time the patient was admitted to the hospital
+- edregtime - date and time at which the patient was registered at the emergency department
+- edouttime - date and time at which the patient was discharged from the emergency department
+- deathtime - date and time of in-hospital death of the patient, present only if patient died in the hospital
+- dischtime - date and time the patient was discharged from the hospital
+
+There are five nested top level properties in each case:
+- patient - provides more details about patient being hospitalized
+- ed - describes patient stay in emergency department, present only if patient visited emergency department during
+hospitalization
+- icu - describes patient stay in intensive care unit, present only if patient visited intensive care unit during
+hospitalization
+- lab - contains results of all laboratory studies that were performed on patient-sourced specimens no later than
+dischtime, meaning the data from the hospitalization itself as well as historical data is included
+- microb - contain results of all microbiology studies that were performed on patient-sourced specimens no later than
+dischtime, meaning the data from the hospitalization itself as well as historical data is included
+
+patient property contains three properties:
+- gender - genotypical sex of the patient
+- race - race of the patient
+- anchor_age - age of the patient in the year of admission; if the real age of the patient was greater than 89 (e.g., 91
+it is shifted down to 89); for the neonates the age will be set to 0
+
+ed property has four root level properties:
+- intime - date and time of the admission to emergency department
+- outtime - data and time of the discharge from the emergency department
+- arrival_transport - method through which the individual arrived at the emergency department, possible values are:
+WALK IN, AMBULANCE, UNKNOWN, OTHER, HELICOPTER
+- disposition - method through which the individual left the emergency department, possible values are: HOME, ADMITTED,
+TRANSFER, LEFT WITHOUT BEING SEEN, OTHER, LEFT AGAINST MEDICAL ADVICE, ELOPED, EXPIRED
+
+ed property has four nested properties:
+- triage - information about the patient when they were first triaged in the emergency department
+- medrecon - survey regarding medicaments taken by patient on regular basis
+- vitalsigns - routine vitalsigns measurements
+- pyxis - medicine dispensations made via the Pyxis system
+
+Records in triage property have nine root level properties:
+- temperature - patient’s temperature in degrees Fahrenheit. Some temperatures may be incorrectly documented as Celsius
+- heartrate - patient’s heart rate in beats per minute
+- resprate - patient’s respiratory rate in breaths per minute
+- o2sat - patient’s peripheral oxygen saturation as a percentage
+- sbp - patient’s systolic blood pressure (mmHg)
+- dbp - patient’s diastolic blood pressure (mmHg)
+- pain - level of pain self-reported by the patient, on a scale of 0-10
+- acuity - order of priority based upon acuity utilizing the Emergency Severity Index (ESI) Five Level triage system.
+This priority is assigned by a registered nurse. Level 1 is the highest priority, while level 5 is the lowest priority.
+- chiefcomplaint - deidentified free-text description of the patient’s chief complaint
+
+Records in medrecon property have four root level properties:
+- name - name of the medication
+- ndc - National Drug Code for the medication
+- etccode - code of the Enhanced Therapeutic Class
+- etcdescription - description of the Enhance Therapeutic Class
+
+Records in vitalsigns property have nine root level properties:
+- charttime - time at which the vital signs were charted
+- temperature - patient’s temperature in degrees Fahrenheit. Some temperatures may be incorrectly documented as Celsius
+- resprate - patient’s respiratory rate in breaths per minute
+- o2sat - patient’s peripheral oxygen saturation as a percentage
+- sbp - patient’s systolic blood pressure (mmHg)
+- dbp - patient’s diastolic blood pressure (mmHg)
+- rhythm - patient’s heart rhythm
+- pain - patient’s self-reported level of pain on a scale from 0-10. The pain is documented as free-text and may
+contain non-numeric entries.
+
+Records in pyxis contain three properties:
+- charttime - time at which the medication was charted, which is the closest approximation to the time the medication
+was administered
+- name - name of the medicine
+- gsn - Generic Sequence Number (GSN), an ontology which provides a code for each medicine
+
+icu property contains two root level properties
+- intime - date and time patient was transferred to the intensive care unit
+- outtime - date and time patient was transferred out of the intensive care unit
+
+icu property contains two nested properties:
+- chartevents_numeric - events charted during ICU stay that have numeric value, and can be aggregated
+- chartevents_descriptive - events charted during ICU stay that have descriptive value and cannot be aggregated
+
+Records in chartevents_numeric have five properties:
+- label - descriptor of the charted phenomena
+- valueuom - unit of measure of the value
+- avg_value - average value charted during ICU stay
+- min_value - minimum value charted during ICU stay
+- max_value - maximum value charted during ICU stay
+
+Records in chartevents_descriptive have three properties:
+- label - descriptor of the charted phenomena
+- value - value of the measured phenomena
+- charttime - date and time when value was charted
+
+Records in lab property have seven properties:
+- label - represented concept
+- fluid - substance on which the measurement was made
+- charttime - date and time measurement was made
+- specimen_id - Uniquely denoted the specimen from which the lab measurement was made. Most lab measurements are made
+on patient-derived samples (specimens) such as blood, urine, and so on. Often multiple measurements are made on the
+same sample. The specimen_id will group measurements made on the same sample, e.g., blood gas measurements made on the
+same sample of blood.
+- value - result of laboratory measurement
+- valuenum - numeric value of the measurment result (if applicable)
+- valueuom - unit of measuremnt of laboratory concept
+
+Records in microb property have fifteen properties:
+- spec_type_desc - specimen which is tested for bacterial growth
+- test_name - test performed on the given specimen
+- org_name - the organism, if any, which grew when tested. If NULL, no organism grew (i.e. a negative culture).
+- ab_name - antibiotic tested against the given organism for sensitivity (if tested)
+- chartdate - the time at which an observation was charted
+- charttime - the same as charttime, except there is no time available
+- comments - deidentified free-text comments associated with the microbiology measurement
+- dilution_comparison - dilution values when testing antibiotic sensitivity
+- dilution_text - dilution values when testing antibiotic sensitivity
+- dilution value - dilution values when testing antibiotic sensitivity
+- interpretation - interpretation of the antibiotic sensitivity, and indicates the results of the test. “S” is
+sensitive, “R” is resistant, “I” is intermediate, and “P” is pending
+- isolate_num - for testing antibiotics, the isolated colony (integer; starts at 1).
+- micro_specimen_id - uniquely denoted the specimen from which the microbiology measurement was made. Most microbiology
+measurements are made on patient-derived samples (specimens) such as blood, urine, and so on. Often multiple
+measurements are made on the same sample. The micro_specimen_id will group measurements made on the same sample, e.g.,
+organisms which grew from the same blood sample.
+- quantity
+- test_seq. - if multiple samples are drawn, the test_seq will delineate them
+
+

@@ -3,7 +3,9 @@ from datetime import datetime
 
 from packages.cases import load_cases
 from packages.ecg import fetch_ecg, get_dicom_path, convert_to_pdf
-from packages.open_ai import query_model, save_response
+from packages.open_ai import query_model, save_response, query_model_with_ecg
+
+model = "gpt-4.1"
 
 
 def main():
@@ -15,16 +17,10 @@ def main():
             subject_id=case['subject_id'],
             dischtime=case['dischtime']
         )
-        print('Downloading ECG')
-        fetch_ecg(dicom_path)
-        print('Converting DICOM to PDF')
-        pdf_filename = convert_to_pdf(dicom_path)
-        path = splitext(pdf_filename)[0]
-        print('Querying model')
-        start = datetime.now()
-        response = query_model(path, case, "gpt-4.1")
-        end = datetime.now()
-        time=(end - start).total_seconds()
+        if dicom_path is None:
+            response, time = query(case)
+        else:
+            response, time = query_with_ecg(case, dicom_path)
         print(f"time: {time}")
         save_response(
             response=response.output_text,
@@ -32,3 +28,31 @@ def main():
             prefix='e',
             time=time
         )
+
+
+def query(case: object):
+    print('Querying model')
+    start = datetime.now()
+    response = query_model(case, model)
+    end = datetime.now()
+    time = calculate_time(start, end)
+    return response, time
+
+
+def query_with_ecg(case: object, dicom_path: str):
+    print('Downloading ECG')
+    fetch_ecg(dicom_path)
+    print('Converting DICOM to PDF')
+    pdf_filename = convert_to_pdf(dicom_path)
+    path = splitext(pdf_filename)[0]
+    print('Querying model')
+    start = datetime.now()
+    response = query_model_with_ecg(path, case, model)
+    end = datetime.now()
+    time = calculate_time(start, end)
+    return response, time
+
+
+def calculate_time(start: datetime, end: datetime) -> float:
+    diff = end - start
+    return diff.total_seconds()
