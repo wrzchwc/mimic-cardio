@@ -1,9 +1,9 @@
 from json import loads
 
 
-def load_cases():
+def load_cases(file_name: str):
     cases = []
-    with open('./assets/cases.jsonl', 'r') as file:
+    with open(f'./assets/{file_name}', 'r') as file:
         for case in file:
             case = loads(case)
             cases.append(case)

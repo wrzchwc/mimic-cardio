@@ -1,5 +1,6 @@
 from os.path import splitext
 from datetime import datetime
+from sys import argv
 
 from packages.cases import load_cases
 from packages.ecg import fetch_ecg, get_dicom_path, convert_to_pdf
@@ -9,7 +10,8 @@ model = "gpt-4.1-2025-04-14"
 
 
 def main():
-    cases = load_cases()
+    print(argv[1:])
+    cases = load_cases(argv[1])
     for index, case in enumerate(cases):
         hadm_id = case['hadm_id']
         print(f"index: {index}, hadm_id: {hadm_id}")
@@ -25,7 +27,7 @@ def main():
         save_response(
             response=response.output_text,
             hadm_id=hadm_id,
-            prefix='e',
+            prefix=argv[2],
             time=time
         )
 
