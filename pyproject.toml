@@ -16,7 +16,8 @@ dependencies = [
 ]
 
 [project.scripts]
-mimic-cardio = "app.main:main"
+mimic-cardio = "apps.mimic_cardio.main:main"
+mimic-stats = "apps.mimic_stats.main:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
