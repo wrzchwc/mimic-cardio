@@ -2,6 +2,7 @@
 .idea
 assets/physionet.org
 assets/responses
+assets/results
 *.egg-info/
 *__pycache__/
 assets/cases.jsonl

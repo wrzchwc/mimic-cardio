@@ -12,7 +12,8 @@ requires-python = ">=3.12"
 dependencies = [
     "pydicom",
     "matplotlib",
-    "openai"
+    "openai",
+    "scikit-learn"
 ]
 
 [project.scripts]
