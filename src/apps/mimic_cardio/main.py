@@ -6,11 +6,10 @@ from packages.cases import load_cases
 from packages.ecg import fetch_ecg, get_dicom_path, convert_to_pdf
 from packages.open_ai import query_model, save_response, query_model_with_ecg
 
-model = "gpt-4.1-2025-04-14"
+model = 'gpt-4.1-2025-04-14'
 
 
 def main():
-    print(argv[1:])
     cases = load_cases(argv[1])
     for index, case in enumerate(cases):
         hadm_id = case['hadm_id']
@@ -19,10 +18,7 @@ def main():
             subject_id=case['subject_id'],
             dischtime=case['dischtime']
         )
-        if dicom_path is None:
-            response, time = query(case)
-        else:
-            response, time = query_with_ecg(case, dicom_path)
+        response, time = query(case, dicom_path)
         print(f"time: {time}")
         save_response(
             response=response.output_text,
@@ -32,7 +28,14 @@ def main():
         )
 
 
-def query(case: object):
+def query(case:object, dicom_path: str | None):
+    if dicom_path is None:
+        return query_without_ecg(case)
+    else:
+        return query_with_ecg(case, dicom_path)
+
+
+def query_without_ecg(case: object):
     print('Querying model')
     start = datetime.now()
     response = query_model(case, model)

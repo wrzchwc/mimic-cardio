@@ -24,16 +24,11 @@
           "properties": {
             "code": {
               "type": "string",
-              "description": "The code associated with the diagnosis."
-            },
-            "reason": {
-              "type": "string",
-              "description": "The reason associated with the diagnosis."
+              "description": "ICD-10 code associated with the diagnosis."
             }
           },
           "required": [
-            "code",
-            "reason"
+            "code"
           ],
           "additionalProperties": false
         }
