@@ -25,6 +25,9 @@ def main():
         except CaseSizeError as e:
             print(e.message)
             continue
+        except Exception as e:
+            print(e)
+            continue
         end = datetime.now()
         save_response(
             response=response.output_text,
