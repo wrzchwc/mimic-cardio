@@ -13,12 +13,15 @@ dependencies = [
     "pydicom",
     "matplotlib",
     "openai",
-    "scikit-learn"
+    "scikit-learn",
+    "statsmodels",
+    "scipy"
 ]
 
 [project.scripts]
 mimic-cardio = "apps.mimic_cardio.main:main"
 mimic-stats = "apps.mimic_stats.main:main"
+mimic-test="apps.mimic_test.main:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
