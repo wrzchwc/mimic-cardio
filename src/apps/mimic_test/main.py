@@ -31,6 +31,6 @@ def main():
     prefix = f'{experiment_1}_{experiment_2}'
     mcnemar_test_multi_label(y_true, y_pred_1, y_pred_2, alpha, codes, prefix)
     wilcoxon_signed_pair_test(y_true, y_pred_1, y_pred_2, alpha, 'greater', prefix)
-    print(bootstrap_sample_recall(y_true, y_pred_1, alpha))
-    print(bootstrap_sample_recall(y_true, y_pred_2, alpha))
+    bootstrap_sample_recall(y_true, y_pred_1, alpha, experiment_1)
+    bootstrap_sample_recall(y_true, y_pred_2, alpha, experiment_2)
 
