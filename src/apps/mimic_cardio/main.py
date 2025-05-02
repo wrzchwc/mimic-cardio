@@ -9,8 +9,8 @@ from packages.open_ai.case_size_error import CaseSizeError
 
 
 def main():
-    token_manager = TokenManager('o3-2025-04-16', 30_000)
-    cases = [case for case in load_cases(argv[1]) if case['hadm_id'] not in ('25102602')]
+    token_manager = TokenManager(argv[3], argv[4])
+    cases = load_cases(argv[1])
     for index, case in enumerate(cases):
         hadm_id = case['hadm_id']
         print(f"index: {index}, hadm_id: {hadm_id}")
