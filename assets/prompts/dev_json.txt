@@ -19,7 +19,7 @@ DIRECT OBSERVATION, ELECTIVE, EU OBSERVATION, EW EMER., OBSERVATION ADMIT, SURGI
 - deathtime - date and time of in-hospital death of the patient, present only if patient died in the hospital
 - dischtime - date and time the patient was discharged from the hospital
 
-There are five nested top level properties in each case:
+There are six nested top level properties in each case:
 - patient - provides more details about patient being hospitalized
 - ed - describes patient stay in emergency department, present only if patient visited emergency department during
 hospitalization
@@ -29,6 +29,8 @@ hospitalization
 dischtime, meaning the data from the hospitalization itself as well as historical data is included
 - microb - contain results of all microbiology studies that were performed on patient-sourced specimens no later than
 dischtime, meaning the data from the hospitalization itself as well as historical data is included
+- radios - contain radiology reports made during radiology studies made during hospitalization or no later than
+dischtime
 
 patient property contains three properties:
 - gender - genotypical sex of the patient
@@ -137,5 +139,18 @@ measurements are made on the same sample. The micro_specimen_id will group measu
 organisms which grew from the same blood sample.
 - quantity
 - test_seq. - if multiple samples are drawn, the test_seq will delineate them
+
+radios property contains four root level properties
+- note_id - identifier of the report
+- charttime - date and time when report was created
+- note_seq - sequential number, helping to organise reports for the same study
+- text - content of the report
+
+radios property has one nested property:
+- details
+
+Records in details property have two properties:
+- field_name - described concept (possible value are study_name or cpt_code)
+- field_value - name of the study or CPT code
 
 
