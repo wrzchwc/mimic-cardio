@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Master thesis"
 authors = [{ name="Jakub Wierzchowiec", email="wierzchowieckuba@gmail.com" }]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.8"
 dependencies = [
     "pydicom",
     "matplotlib",

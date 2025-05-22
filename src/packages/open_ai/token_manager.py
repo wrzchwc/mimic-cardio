@@ -21,8 +21,6 @@ def _extract_limit_requested(error_message, hadm_id: str):
 
 
 class TokenManager:
-    __temperature = 0.1
-
     def __init__(self, model='gpt-4.1-nano', tpm=30_000):
         self.__tokens = tpm
         self.__tpm_limit = tpm
@@ -34,13 +32,13 @@ class TokenManager:
 
     def send_request(self, model_input: str, hadm_id: str) -> Response:
         while True:
-            print('Querying model')
             try:
                 return self.__client.responses.create(
                     model=self.__model,
                     input=model_input,
                     text=self.__schema,
-                    reasoning = {"effort": "high"}
+                    temperature=0.1
+                    # reasoning = {"effort": "high"}
                 )
             except RateLimitError as e:
                 self.__handle_rate_limit(str(e), hadm_id)

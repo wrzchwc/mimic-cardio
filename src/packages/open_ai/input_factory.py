@@ -44,6 +44,35 @@ def build_with_ecg(path: str, case: object, ecg_meta: str):
         }
     ]
 
+def build_short_with_ecg(path: str, case: object, ecg_meta: str):
+    return [
+        {
+            "role": "developer",
+            "content": __load_text_data('./assets/prompts/dev_ecg_short')
+        },
+        {
+            "role": "user",
+            "content": dumps(case)
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_file",
+                    "file_id": (__upload_dicom(path))
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "content": ecg_meta
+        },
+        {
+            "role": "user",
+            "content": __final_prompt
+        }
+    ]
+
 
 def build(case: object):
     return [
@@ -58,6 +87,22 @@ def build(case: object):
         {
             "role": "user",
             "content": f"Here's the JSON data: {dumps(case)}"
+        },
+        {
+            "role": "user",
+            "content": __final_prompt
+        }
+    ]
+
+def build_short(case: object):
+    return [
+        {
+            "role": "developer",
+            "content": __load_text_data('./assets/prompts/dev_short')
+        },
+        {
+            "role": "user",
+            "content": dumps(case)
         },
         {
             "role": "user",
