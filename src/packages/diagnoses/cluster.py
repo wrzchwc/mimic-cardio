@@ -1,4 +1,5 @@
 from .diagnoses_for_cases import filter_codes
+from .get_hadm_ids import get_hadm_ids_from_responses
 from packages.cases import load_cases
 from json import loads
 
@@ -41,6 +42,28 @@ def load_clustered_predicted_diagnoses_for_case(hadm_id: str, eligible_codes: li
         response = loads(file.read())
     diagnoses = [diagnose['code'] for diagnose in response['diagnoses']]
     return filter_codes(eligible_codes, cluster_codes(diagnoses))
+
+def get_clustered_original_diagnoses(eligible_codes: list[str], prefix: str) -> list[list[str]]:
+    with open('./assets/diagnoses.json', 'r') as file:
+        all_original_diagnoses = loads(file.read())
+    original_diagnoses_for_cases = []
+    hadm_ids = get_hadm_ids_from_responses(prefix)
+    for hadm_id in hadm_ids:
+        original_diagnoses = next((d['diagnoses'] for d in all_original_diagnoses if d['hadm_id'] == hadm_id), None)
+        original_diagnoses_for_case = filter_codes(eligible_codes, cluster_codes(original_diagnoses))
+        original_diagnoses_for_cases.append(original_diagnoses_for_case)
+    return original_diagnoses_for_cases
+
+def get_clustered_predicted_diagnoses(eligible_codes: list[str], prefix: str) -> list[list[str]]:
+    predicted_diagnoses_for_cases = []
+    hadm_ids = get_hadm_ids_from_responses(prefix)
+    for hadm_id in hadm_ids:
+        with open(f'./assets/responses/{prefix}/{hadm_id}.json', 'r') as file:
+            response = loads(file.read())
+        loaded_codes = [diagnose['code'] for diagnose in response['diagnoses']]
+        filtered_response = filter_codes(eligible_codes, cluster_codes(loaded_codes))
+        predicted_diagnoses_for_cases.append(sorted(filtered_response))
+    return predicted_diagnoses_for_cases
 
 
 def cluster_codes(codes: list[str]) -> list[str]:

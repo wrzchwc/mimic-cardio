@@ -1,25 +1,23 @@
 from json import loads
-import packages.diagnoses
+from .get_hadm_ids import get_hadm_ids_from_responses
 
 
 def get_original_diagnoses(eligible_codes: list[str], prefix: str) -> list[list[str]]:
     with open('./assets/diagnoses.json', 'r') as file:
         all_original_diagnoses = loads(file.read())
     original_diagnoses_for_cases = []
-    hadm_ids = packages.diagnoses.get_hadm_ids_from_responses(prefix)
+    hadm_ids = get_hadm_ids_from_responses(prefix)
     for hadm_id in hadm_ids:
         original_diagnoses = next((d['diagnoses'] for d in all_original_diagnoses if d['hadm_id'] == hadm_id), None)
         diagnoses_transformed = [d[:3] + '.' + d[3:] for d in original_diagnoses]
         original_diagnoses_for_case = filter_codes(eligible_codes, diagnoses_transformed)
-        if original_diagnoses_for_case is None:
-            raise Exception(f'No diagnoses found for admission: {hadm_id}')
         original_diagnoses_for_cases.append(original_diagnoses_for_case)
     return original_diagnoses_for_cases
 
 
 def get_predicted_diagnoses(eligible_codes: list[str], prefix: str) -> list[list[str]]:
     predicted_diagnoses_for_cases = []
-    hadm_ids = packages.diagnoses.get_hadm_ids_from_responses(prefix)
+    hadm_ids = get_hadm_ids_from_responses(prefix)
     for hadm_id in hadm_ids:
         with open(f'./assets/responses/{prefix}/{hadm_id}.json', 'r') as file:
             response = loads(file.read())
